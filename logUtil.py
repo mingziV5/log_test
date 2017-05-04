@@ -27,11 +27,11 @@ def list_log_into_db(list_log):
         http_status = i[0][2]
         count = i[1]
         sql = 'insert into loginfo (ip,context,http_status,count) values ("%s","%s",%s,%s)'%(ip,context,http_status,count)
-        mydb = dbUtil.DB(host='192.168.16.210',user='log',passwd='ming',port=3307,db='logdb')
-	mydb.execute(sql)
+        mydb = dbUtil.DB(host='192.168.31.2',user='log',passwd='ming',port=3306,db='logdb')
+        mydb.execute(sql)
 
 if __name__ == '__main__':
-    dict_log = logUtil('../access_20170502.log')
+    dict_log = logUtil('access-web.log')
     list_log = dict_sorted(dict_log)
     list_log_into_db(list_log)
 

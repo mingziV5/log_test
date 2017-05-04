@@ -17,12 +17,16 @@
             var legendData = []
             var seriesData = []
 	    $.getJSON('/get-http-status',function(res){
-                //seriesData = eval(res)
-	        $.each(res,function(index,value){
-		    legendData.push(value[0])
-		    seriesData.push({value:value[1],name:value[0]})
-	        })
-                    var myChart = echarts.init($('#main')[0])
+                data = eval(res)
+                //console.log(data)
+                legendData = data['legend']
+                seriesData = data['data']
+	        //$.each(res,function(index,value){
+		    //    legendData.push(value[0])
+		    //    seriesData.push({value:value[1],name:value[0]})
+                //seriesData.push(value[])
+	        //})
+            var myChart = echarts.init($('#main')[0])
 		    console.log(legendData)
 		    console.log(seriesData)
 		    var option = {
@@ -98,7 +102,7 @@
 		    yAxis: {
 			type: 'category',
 			//data: ['巴西','印尼','美国','印度','中国','世界人口(万)']
-                        data:yData
+            data:yData
 		    },
 		    series: [
 			{

@@ -15,23 +15,25 @@ def index():
 @log_web.route('/get-http-status')
 def get_http_status():
     sql = 'select http_status,sum(count) from loginfo group by http_status'
-    mydb = dbUtil.DB(host='192.168.16.210',user='log',passwd='ming',port=3307,db='logdb')
-    list_b = mydb.execute(sql)
-    http_status_list = []
-    for i in list_b:
+    mydb = dbUtil.DB(host='192.168.31.2',user='log',passwd='ming',port=3306,db='logdb')
+    res = mydb.execute(sql)
+    http_dict = {'legend':[],'data':[]}
+    for i in res:
         i1 = str(i[0])
         i2 = int(i[1])
-        http_status_list.append((i1,i2))
+        http_dict['legend'].append(i1)
+        http_dict['data'].append({'name':i1,'value':i2})
+        #http_status_list.append((i1,i2))
     #print http_status_list
-    return json.dumps(http_status_list) 
+    return json.dumps(http_dict) 
 
 @log_web.route('/get-url')
 def get_url():
     sql = 'select context,sum(count) from loginfo where context like "%htm" or context like "%html"  group by context order by sum(count) desc limit 20'
-    mysql = dbUtil.DB(host='192.168.16.210',user='log',passwd='ming',port=3307,db='logdb')
-    list_b = mysql.execute(sql)
+    mysql = dbUtil.DB(host='192.168.31.2',user='log',passwd='ming',port=3306,db='logdb')
+    res = mysql.execute(sql)
     context_list = []
-    for i in list_b:
+    for i in res:
         i1 = str(i[0])
         i2 = int(i[1])
         context_list.append((i1,i2))
