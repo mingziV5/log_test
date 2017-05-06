@@ -42,7 +42,7 @@
 			legend: {
 			    orient: 'vertical',
 			    left: 'left',
-			    data: legendData
+			    //data: legendData
 			},
 			series : [
 			    {
@@ -50,7 +50,7 @@
 				type: 'pie',
 				radius : '55%',
 				center: ['50%', '60%'],
-				data: seriesData,
+				//data: seriesData,
 				itemStyle: {
 				    emphasis: {
 					shadowBlur: 10,
@@ -61,6 +61,8 @@
 			    }
 			]
 		    };
+            option.legend.data = legendData
+            option.series[0].data = seriesData
 		    myChart.setOption(option);
 	    })
            
