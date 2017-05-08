@@ -2,11 +2,21 @@
 #coding:utf-8
 import dbUtil
 import json
+import config
 from flask import Flask
 from flask import render_template
 
 log_web = Flask(__name__)
 log_web.secret_key = 'secret_key'
+log_web.config.from_object(config)
+#log_web.config['DB_HOST']='192.168.31.2'
+#log_web.config.update(
+#    DB_HOST = '192.168.31.2',
+#    DB_USER = 'log',
+#    DB_PASSWD = 'ming',
+#    DB_PORT = 3306,
+#    DB_DBNAME = 'logdb'
+#)
 
 @log_web.route('/')
 def index():
@@ -19,10 +29,12 @@ def map():
 @log_web.route('/mape')
 def map2():
     return render_template('mapexample.html')
+
 @log_web.route('/get-http-status')
 def get_http_status():
     sql = 'select http_status,sum(count) from loginfo group by http_status'
-    mydb = dbUtil.DB(host='192.168.31.2',user='log',passwd='ming',port=3306,db='logdb')
+    #mydb = dbUtil.DB(host='192.168.31.2',user='log',passwd='ming',port=3306,db='logdb')
+    mydb = dbUtil.DB(host=log_web.config['DB_HOST'],user=log_web.config['DB_USER'],passwd=log_web.config['DB_PASSWD'],port=log_web.config['DB_PORT'],db=log_web.config['DB_DBNAME'])
     res = mydb.execute(sql)
     http_dict = {'legend':[],'data':[]}
     for i in res:
@@ -37,8 +49,9 @@ def get_http_status():
 @log_web.route('/get-url')
 def get_url():
     sql = 'select context,sum(count) from loginfo where context like "%htm" or context like "%html"  group by context order by sum(count) desc limit 20'
-    mysql = dbUtil.DB(host='192.168.31.2',user='log',passwd='ming',port=3306,db='logdb')
-    res = mysql.execute(sql)
+    #mysql = dbUtil.DB(host='192.168.31.2',user='log',passwd='ming',port=3306,db='logdb')
+    mydb = dbUtil.DB(host=log_web.config['DB_HOST'],user=log_web.config['DB_USER'],passwd=log_web.config['DB_PASSWD'],port=log_web.config['DB_PORT'],db=log_web.config['DB_DBNAME'])
+    res = mydb.execute(sql)
     context_list = []
     for i in res:
         i1 = str(i[0])
@@ -49,8 +62,9 @@ def get_url():
 @log_web.route('/get-map-data')
 def get_map_data():
     sql = 'select ip,x,y,count from logmap'
-    mysql = dbUtil.DB(host='192.168.31.2',user='log',passwd='ming',port=3306,db='logdb')
-    res = mysql.execute(sql)
+    #mysql = dbUtil.DB(host='192.168.31.2',user='log',passwd='ming',port=3306,db='logdb')
+    mydb = dbUtil.DB(host=log_web.config['DB_HOST'],user=log_web.config['DB_USER'],passwd=log_web.config['DB_PASSWD'],port=log_web.config['DB_PORT'],db=log_web.config['DB_DBNAME'])
+    res = mydb.execute(sql)
     map_data = []
     for i in res:
         ip = str(i[0])
@@ -61,4 +75,5 @@ def get_map_data():
     return json.dumps(map_data)
 
 if __name__ == '__main__':
+    #print log_web.config
     log_web.run(host='0.0.0.0',debug=True)
